@@ -10,7 +10,7 @@
             FOTO
         </div>
         <h2 class="text-2xl font-bold text-gray-800">Nama Kamu Disini</h2>
-        <p class="text-blue-500 font-medium mb-1">NIM: 24.12.3274</p>
+        <p class="text-blue-500 font-medium mb-1">NIM: 24.12.3275</p>
         <p class="text-gray-500 text-sm mb-4">Program Studi Sistem Informasi</p>
         
         <p class="text-gray-600 text-sm leading-relaxed">
