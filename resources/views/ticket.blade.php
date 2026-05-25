@@ -19,8 +19,7 @@
 
     <div class="max-w-md w-full">
         <div class="text-center mb-8">
-            <div
-                class="w-20 h-20 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4 border-4 border-white">
+            <div class="w-20 h-20 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4 border-4 border-white">
                 <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path>
                 </svg>
@@ -32,7 +31,7 @@
         <div class="bg-white text-slate-900 rounded-[2.5rem] overflow-hidden shadow-2xl relative">
             <div class="p-8 bg-indigo-50 border-b-4 border-dashed border-indigo-100 text-center relative">
                 <p class="text-indigo-600 font-bold uppercase tracking-widest text-xs mb-2">E-Ticket Resmi</p>
-                <h2 class="text-2xl font-black leading-tight">Jazz Night 2024: A Celebration</h2>
+                <h2 class="text-2xl font-black leading-tight">{{ $transaction->event->title }}</h2>
 
                 <div class="absolute -left-4 -bottom-4 w-8 h-8 bg-indigo-600 rounded-full"></div>
                 <div class="absolute -right-4 -bottom-4 w-8 h-8 bg-indigo-600 rounded-full"></div>
@@ -42,19 +41,19 @@
                 <div class="grid grid-cols-2 gap-6">
                     <div>
                         <p class="text-slate-400 text-xs font-bold uppercase mb-1">Nama Pembeli</p>
-                        <p class="font-bold text-lg">Donni Prabowo</p>
+                        <p class="font-bold text-lg text-slate-800">{{ $transaction->customer_name }}</p>
                     </div>
                     <div>
                         <p class="text-slate-400 text-xs font-bold uppercase mb-1">Tanggal & Waktu</p>
-                        <p class="font-bold text-lg">16 Nov, 19:30</p>
+                        <p class="font-bold text-lg text-slate-800">{{ \Carbon\Carbon::parse($transaction->event->date)->translatedFormat('d M, H:i') }} WIB</p>
                     </div>
                     <div>
                         <p class="text-slate-400 text-xs font-bold uppercase mb-1">Order ID</p>
-                        <p class="font-bold">TRX-99210</p>
+                        <p class="font-bold text-slate-800">{{ $transaction->order_id }}</p>
                     </div>
                     <div>
                         <p class="text-slate-400 text-xs font-bold uppercase mb-1">Lokasi</p>
-                        <p class="font-bold">Blue Note Lounge</p>
+                        <p class="font-bold text-slate-800">{{ $transaction->event->location }}</p>
                     </div>
                 </div>
 
@@ -80,7 +79,7 @@
                             <div class="w-1/4 h-1/4 bg-slate-900"></div>
                         </div>
                     </div>
-                    <p class="mt-4 font-mono font-bold text-slate-800">TKT-001293848</p>
+                    <p class="mt-4 font-mono font-bold text-slate-800">TKT-{{ str_pad($transaction->id, 8, '0', STR_PAD_LEFT) }}</p>
                 </div>
             </div>
 

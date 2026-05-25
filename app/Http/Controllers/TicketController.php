@@ -2,13 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Transaction;
 use Illuminate\Http\Request;
 
 class TicketController extends Controller
 {
-    // Menampilkan halaman e-ticket setelah sukses bayar
-    public function index()
+    // Menampilkan halaman e-ticket dinamis berdasarkan order_id
+    public function show($order_id)
     {
-        return view('ticket');
+        $transaction = Transaction::with('event')->where('order_id', $order_id)->firstOrFail();
+        return view('ticket', compact('transaction'));
     }
 }

@@ -7,6 +7,16 @@
     <p class="text-slate-500 font-medium">Isi detail event baru dengan lengkap.</p>
 </header>
 
+@if ($errors->any())
+    <div class="mb-8 p-6 bg-rose-50 border-2 border-rose-100 rounded-2xl text-rose-700 max-w-4xl">
+        <p class="font-bold mb-2">Terjadi kesalahan input:</p>
+        <ul class="list-disc pl-5 space-y-1 text-sm font-medium">
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
 
 <div class="bg-white rounded-[2.5rem] border border-slate-100 p-10 shadow-sm max-w-4xl">
     <form action="{{ route('admin.events.store') }}" method="POST" enctype="multipart/form-data" class="space-y-6">

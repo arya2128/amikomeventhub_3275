@@ -15,13 +15,14 @@ use App\Http\Controllers\HomeController;
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
 Route::get('/profil', function () { return view('profil'); })->name('profil');
-Route::get('/katalog', function () { return view('katalog'); })->name('katalog');
+Route::get('/katalog', [HomeController::class, 'katalog'])->name('katalog');
 Route::get('/bantuan', function () { return view('bantuan'); })->name('bantuan');
 Route::get('/kontak', function () { return view('kontak'); })->name('kontak');
 
-Route::get('/event/detail', function () { return view('event-detail'); })->name('event.show');
-Route::get('/checkout', function () { return view('checkout'); })->name('checkout');
-Route::get('/ticket', function () { return view('ticket'); })->name('ticket');
+Route::get('/event/{id}', [\App\Http\Controllers\EventController::class, 'show'])->name('event.show');
+Route::get('/checkout/{id}', [\App\Http\Controllers\EventController::class, 'checkout'])->name('checkout');
+Route::post('/checkout/{id}', [\App\Http\Controllers\EventController::class, 'storeTransaction'])->name('checkout.store');
+Route::get('/ticket/{order_id}', [\App\Http\Controllers\TicketController::class, 'show'])->name('ticket.show');
 
 // ==========================================
 // RUTE ADMIN (DIGABUNG)
