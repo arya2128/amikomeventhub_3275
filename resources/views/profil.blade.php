@@ -11,8 +11,8 @@
                 </div>
             </div>
             <div class="px-8 py-16 text-center">
-                <h2 class="text-3xl font-extrabold text-slate-800">Dimas Muhamad Rofiq</h2>
-                <p class="text-indigo-600 font-bold text-lg mt-1">24.12.3302</p>
+                <h2 class="text-3xl font-extrabold text-slate-800">Arya Robby Adhyaksa</h2>
+                <p class="text-indigo-600 font-bold text-lg mt-1">24.12.3275</p>
                 <div class="w-12 h-1 bg-indigo-100 mx-auto my-6 rounded-full"></div>
                 <p class="text-slate-500 font-medium text-sm leading-relaxed px-4">
                     Mahasiswa Amikom Yogyakarta

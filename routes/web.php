@@ -14,7 +14,7 @@ use App\Http\Controllers\HomeController;
 // PERUBAHAN: Rute home sekarang diarahkan ke HomeController, bukan closure lagi
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
-Route::get('/profil', function () { return view('profil'); })->name('profil');
+// Route::get('/profil', function () { return view('profil'); })->name('profil');                                                   
 Route::get('/katalog', [HomeController::class, 'katalog'])->name('katalog');
 Route::get('/bantuan', function () { return view('bantuan'); })->name('bantuan');
 Route::get('/kontak', function () { return view('kontak'); })->name('kontak');
