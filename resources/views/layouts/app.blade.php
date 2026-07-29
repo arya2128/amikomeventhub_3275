@@ -34,7 +34,9 @@
 
         <div class="hidden md:flex items-center gap-8 font-medium">
             <a href="{{ route('katalog') }}" class="hover:text-indigo-600 transition">Jelajahi</a>
+            <a href="{{ route('profil') }}" class="hover:text-indigo-600 transition">Profil</a>
             <a href="{{ route('bantuan') }}" class="hover:text-indigo-600 transition">Bantuan</a>
+            <a href="{{ route('kontak') }}" class="hover:text-indigo-600 transition">Kontak</a>
             @if(Auth::check())
                 @if(in_array(Auth::user()->role, ['admin', 'organizer']))
                     <a href="{{ route('admin.dashboard') }}" class="hover:text-indigo-600 transition">Panel Admin</a>

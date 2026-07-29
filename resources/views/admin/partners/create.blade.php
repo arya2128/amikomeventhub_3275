@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.admin', ['title' => 'Tambah Partner'])
 
 @section('content')
 <div class="max-w-4xl mx-auto px-6 py-10">

@@ -12,6 +12,11 @@
     </a>
 </header>
 
+@if (session('success'))
+    <div class="mb-8 p-6 bg-green-50 border-2 border-green-100 rounded-2xl text-green-700">
+        <p class="font-bold">{{ session('success') }}</p>
+    </div>
+@endif
 
 <div class="bg-white rounded-[2.5rem] border border-slate-100 shadow-sm overflow-hidden">
     <div class="overflow-x-auto">

@@ -23,7 +23,7 @@ use App\Http\Controllers\ReviewController;
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
 Route::get('/profil', function () { return view('profil'); })->name('profil');
-Route::get('/katalog', function () { return view('katalog'); })->name('katalog');
+Route::get('/katalog', [HomeController::class, 'katalog'])->name('katalog');
 Route::get('/bantuan', function () { return view('bantuan'); })->name('bantuan');
 Route::get('/kontak', function () { return view('kontak'); })->name('kontak');
 

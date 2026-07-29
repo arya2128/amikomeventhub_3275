@@ -34,4 +34,19 @@ class HomeController extends Controller
         return view('welcome', compact('events', 'categories', 'partners'));
         
     }
+
+    public function katalog(Request $request)
+    {
+        $query = Event::with('category')->latest();
+
+        if ($request->has('search') && $request->search != '') {
+            $query->where('title', 'like', '%' . $request->search . '%')
+                  ->orWhere('description', 'like', '%' . $request->search . '%')
+                  ->orWhere('location', 'like', '%' . $request->search . '%');
+        }
+
+        $events = $query->get();
+
+        return view('katalog', compact('events'));
+    }
 }
