@@ -52,7 +52,7 @@ return [
     |
     */
 
-    'url' => env('APP_URL', 'http://localhost'),
+    'url' => (!env('APP_URL') || env('APP_URL') === 'https://' || !filter_var(env('APP_URL'), FILTER_VALIDATE_URL)) ? 'http://localhost' : env('APP_URL'),
 
     /*
     |--------------------------------------------------------------------------
