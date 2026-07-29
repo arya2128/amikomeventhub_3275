@@ -12,7 +12,7 @@
         </div>
         <h2 class="text-3xl font-black mb-4">Terima Kasih!</h2>
         <p class="text-slate-500 mb-8 leading-relaxed">
-            Pembayaran untuk pesanan <strong>{{ $transaction->order_id }}</strong> telah berhasil diverifikasi.
+            Pembayaran untuk pesanan <strong>{{ $transaction->order_id }}</strong> atas nama <strong>{{ $transaction->customer_name }}</strong> telah berhasil diverifikasi.
             E-Ticket resmi Anda telah dikirimkan ke alamat email <strong>{{ $transaction->customer_email }}</strong>. Silakan periksa kotak masuk atau folder spam Anda.
         </p>
         <a href="{{ route('home') }}" class="inline-block px-8 py-4 bg-indigo-600 text-white rounded-xl font-bold hover:bg-indigo-700 transition">

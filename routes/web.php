@@ -30,9 +30,11 @@ Route::get('/kontak', function () { return view('kontak'); })->name('kontak');
 Route::get('/event/{event}', [EventController::class, 'show'])->name('event.show');
 Route::post('/event/{event}/reviews', [ReviewController::class, 'store'])->middleware('auth')->name('event.reviews.store');
 Route::get('/checkout/{event}', [CheckoutController::class, 'create'])->name('checkout.create');
+Route::get('/checkout-legacy/{event}', [CheckoutController::class, 'create'])->name('checkout');
 Route::post('/checkout/{event}', [CheckoutController::class, 'store'])->name('checkout.store');
 Route::get('/payment/{order_id}', [CheckoutController::class, 'payment'])->name('checkout.payment');
 Route::get('/success/{order_id}', [CheckoutController::class, 'success'])->name('checkout.success');
+Route::get('/ticket/{order_id}', [CheckoutController::class, 'success'])->name('ticket.show');
 Route::get('/ticket', function () { return view('ticket'); })->name('ticket');
 Route::post('/midtrans/callback', [MidtransWebhookController::class, 'handle']);
 
