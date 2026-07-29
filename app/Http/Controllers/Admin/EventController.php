@@ -11,11 +11,18 @@ use Illuminate\Support\Facades\Storage;
 class EventController extends Controller
 {
     /**
-     * Menampilkan daftar semua event di halaman admin.
+     * Menampilkan daftar semua event yang disaring berdasarkan hak akses tenant (Multi-Tenant).
      */
     public function index()
     {
-        $events = Event::with('category')->latest()->get();
+        $user = auth()->user();
+        if ($user->role === 'admin') {
+            $events = Event::with('category')->latest()->get();
+        } else {
+            // Organizer hanya melihat event buatan sendiri
+            $events = Event::with('category')->where('user_id', $user->id)->latest()->get();
+        }
+
         return view('admin.events.index', compact('events'));
     }
 
@@ -29,7 +36,7 @@ class EventController extends Controller
     }
 
     /**
-     * Menyimpan data event baru ke database.
+     * Menyimpan data event baru ke database (menyematkan user_id penyelenggara).
      */
     public function store(Request $request)
     {
@@ -51,6 +58,7 @@ class EventController extends Controller
 
         Event::create([
             'category_id' => $request->category_id,
+            'user_id'     => auth()->id(), // Menyimpan pemilik tenant (organizer)
             'title'       => $request->title,
             'description' => $request->description,
             'date'        => $request->date,
@@ -64,21 +72,34 @@ class EventController extends Controller
     }
 
     /**
-     * Menampilkan form edit untuk event tertentu.
+     * Menampilkan form edit untuk event tertentu (Proteksi Otoritas Tenant).
      */
     public function edit($id)
     {
         $event = Event::findOrFail($id);
+        $user = auth()->user();
+
+        // Cek kepemilikan tenant
+        if ($user->role !== 'admin' && $event->user_id !== $user->id) {
+            abort(403, 'Akses Ditolak! Anda tidak memiliki hak mengelola event ini.');
+        }
+
         $categories = Category::all();
         return view('admin.events.edit', compact('event', 'categories'));
     }
 
     /**
-     * Memperbarui data event di database.
+     * Memperbarui data event di database (Proteksi Otoritas Tenant).
      */
     public function update(Request $request, $id)
     {
         $event = Event::findOrFail($id);
+        $user = auth()->user();
+
+        // Cek kepemilikan tenant
+        if ($user->role !== 'admin' && $event->user_id !== $user->id) {
+            abort(403, 'Akses Ditolak! Anda tidak memiliki hak mengelola event ini.');
+        }
 
         $request->validate([
             'title'       => 'required|string|max:255',
@@ -115,11 +136,17 @@ class EventController extends Controller
     }
 
     /**
-     * Menghapus event dari database beserta berkas posternya.
+     * Menghapus event dari database (Proteksi Otoritas Tenant).
      */
     public function destroy($id)
     {
         $event = Event::findOrFail($id);
+        $user = auth()->user();
+
+        // Cek kepemilikan tenant
+        if ($user->role !== 'admin' && $event->user_id !== $user->id) {
+            abort(403, 'Akses Ditolak! Anda tidak memiliki hak mengelola event ini.');
+        }
         
         if ($event->poster_path) {
             Storage::disk('public')->delete($event->poster_path);

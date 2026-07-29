@@ -18,7 +18,7 @@
 
     <div class="max-w-xl mx-auto bg-white p-8 rounded-2xl shadow-lg border border-gray-100 text-center">
         <h1 class="text-3xl font-bold text-gray-800 mb-4">Hubungi Kami</h1>
-        <p class="text-gray-600 mb-6">Punya pertanyaan lebih lanjut? Kirimkan pesan melalui email ke: <br><strong class="text-indigo-600">dimasmrofiq@amikomeventhub.id</strong></p>
+        <p class="text-gray-600 mb-6">Punya pertanyaan lebih lanjut? Kirimkan pesan melalui email ke: <br><strong class="text-indigo-600">arya2128@amikomeventhub.id</strong></p>
     </div>
 
     

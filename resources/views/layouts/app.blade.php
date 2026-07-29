@@ -34,9 +34,21 @@
 
         <div class="hidden md:flex items-center gap-8 font-medium">
             <a href="{{ route('katalog') }}" class="hover:text-indigo-600 transition">Jelajahi</a>
-            <a href="{{ route('admin.categories.index') }}" class="hover:text-indigo-600 transition">Kategori</a>
             <a href="{{ route('bantuan') }}" class="hover:text-indigo-600 transition">Bantuan</a>
-            <a href="{{ route('admin.dashboard') }}"class="hover:text-indigo-600 transition" >Panel Admin</a>
+            @if(Auth::check())
+                @if(in_array(Auth::user()->role, ['admin', 'organizer']))
+                    <a href="{{ route('admin.dashboard') }}" class="hover:text-indigo-600 transition">Panel Admin</a>
+                @endif
+                <div class="flex items-center gap-4 pl-4 border-l border-slate-200">
+                    <span class="text-slate-600 text-sm">Hi, <strong class="text-slate-800">{{ Auth::user()->name }}</strong></span>
+                    <form action="{{ route('admin.logout') }}" method="POST" class="inline">
+                        @csrf
+                        <button type="submit" class="px-4 py-2 bg-rose-50 text-rose-600 rounded-xl hover:bg-rose-600 hover:text-white text-sm font-bold transition">Logout</button>
+                    </form>
+                </div>
+            @else
+                <a href="{{ route('login') }}" class="px-5 py-2.5 bg-indigo-600 text-white rounded-xl font-bold hover:bg-indigo-700 transition">Masuk</a>
+            @endif
         </div>
         
     </nav>

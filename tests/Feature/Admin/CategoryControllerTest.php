@@ -10,6 +10,15 @@ class CategoryControllerTest extends TestCase
 {
     use RefreshDatabase;
 
+    protected $admin;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->admin = \App\Models\User::factory()->create(['role' => 'admin']);
+        $this->actingAs($this->admin);
+    }
+
     /**
      * Test: Display all categories (INDEX)
      */

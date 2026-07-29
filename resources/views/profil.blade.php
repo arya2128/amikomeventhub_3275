@@ -22,8 +22,8 @@
             <div class="w-24 h-24 bg-gray-300 rounded-full mx-auto -mt-16 border-4 border-white shadow-md flex items-center justify-center text-4xl text-gray-500 font-bold">
                 P
             </div>
-            <h2 class="text-2xl font-bold mt-4 text-gray-800">Dimas Muhamad Rofiq</h2>
-            <p class="text-indigo-600 font-medium">24.12.3302</p>
+            <h2 class="text-2xl font-bold mt-4 text-gray-800">Arya Robby Adhyaksa</h2>
+            <p class="text-indigo-600 font-medium">24.12.3275</p>
             <p class="text-gray-500 mt-4 px-4 text-sm">Mahasiswa Amikom Yogyakarta Mata Kuliah Digital bussines</p>
         </div>
     </div>

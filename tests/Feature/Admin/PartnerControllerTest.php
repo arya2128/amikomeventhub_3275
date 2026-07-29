@@ -13,10 +13,14 @@ class PartnerControllerTest extends TestCase
 {
     use RefreshDatabase;
 
+    protected $admin;
+
     protected function setUp(): void
     {
         parent::setUp();
         Storage::fake('public');
+        $this->admin = \App\Models\User::factory()->create(['role' => 'admin']);
+        $this->actingAs($this->admin);
     }
 
     /**

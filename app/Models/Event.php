@@ -12,13 +12,21 @@ class Event extends Model
     use HasFactory;
 
     protected $fillable = [
-    'category_id', 'title', 'description', 'date',
-    'location', 'price', 'stock', 'poster_path'
+        'category_id', 'user_id', 'title', 'description', 'date',
+        'location', 'price', 'stock', 'poster_path'
     ];
 
 
     public function category() {
         return $this->belongsTo(Category::class);
+    }
+
+    public function user() {
+        return $this->belongsTo(User::class);
+    }
+
+    public function reviews() {
+        return $this->hasMany(Review::class);
     }
 }
 

@@ -50,7 +50,7 @@ class DatabaseSeeder extends Seeder
             'location' => 'Amikom Baru',
             'price' => 50000,
             'stock' => 100,
-            'poster_path' => 'posters/event-1.png',
+            'poster_path' => null,
         ]);
             
         Event::create([
@@ -61,7 +61,7 @@ class DatabaseSeeder extends Seeder
             'location' => 'Inkubator Amikom',
             'price' => 50000,
             'stock' => 100,
-            'poster_path' => 'posters/event-2.png',
+            'poster_path' => null,
         ]);
                     
         Event::create([
@@ -72,7 +72,7 @@ class DatabaseSeeder extends Seeder
             'location' => 'Cinema Unit 6',
             'price' => 50000,
             'stock' => 100,
-            'poster_path' => 'posters/event-3.png',
+            'poster_path' => null,
         ]);
     }
 }

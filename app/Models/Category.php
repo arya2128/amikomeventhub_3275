@@ -20,4 +20,12 @@ class Category extends Model
     {
         return $this->hasMany(Partner::class, 'category_id');
     }
+
+    /**
+     * RELASI: Satu Kategori bisa memiliki banyak Event
+     */
+    public function events()
+    {
+        return $this->hasMany(Event::class, 'category_id');
+    }
 }
