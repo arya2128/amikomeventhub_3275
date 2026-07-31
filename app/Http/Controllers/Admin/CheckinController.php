@@ -25,13 +25,22 @@ class CheckinController extends Controller
             'order_id' => 'required|string',
         ]);
 
-        $transaction = Transaction::where('order_id', $request->order_id)->first();
+        $transaction = Transaction::with('event')->where('order_id', $request->order_id)->first();
 
         if (!$transaction) {
             return response()->json([
                 'status'  => 'error',
                 'message' => 'Tiket tidak ditemukan!',
             ], 404);
+        }
+
+        $user = auth()->user();
+        // Proteksi Otoritas Tenant
+        if ($user->role !== 'admin' && ($transaction->event->user_id ?? null) !== $user->id) {
+            return response()->json([
+                'status'  => 'error',
+                'message' => 'Akses Ditolak! Anda tidak berwenang memvalidasi tiket event ini.',
+            ], 403);
         }
 
         if (strtolower($transaction->status) === 'used') {

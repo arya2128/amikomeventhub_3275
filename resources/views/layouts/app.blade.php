@@ -38,6 +38,7 @@
             <a href="{{ route('bantuan') }}" class="hover:text-indigo-600 transition">Bantuan</a>
             <a href="{{ route('kontak') }}" class="hover:text-indigo-600 transition">Kontak</a>
             @if(Auth::check())
+                <a href="{{ route('my-ticket') }}" class="hover:text-indigo-600 transition">Tiket Saya</a>
                 @if(in_array(Auth::user()->role, ['admin', 'organizer']))
                     <a href="{{ route('admin.dashboard') }}" class="hover:text-indigo-600 transition">Panel Admin</a>
                 @endif

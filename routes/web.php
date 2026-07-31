@@ -14,6 +14,8 @@ use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\MidtransWebhookController;
 use App\Http\Controllers\Auth\SocialiteController;
 use App\Http\Controllers\ReviewController;
+use App\Http\Controllers\MyTicketController;
+use App\Http\Controllers\TicketController;
 
 // ==========================================
 // RUTE PUBLIK (HALAMAN DEPAN)
@@ -34,8 +36,9 @@ Route::get('/checkout-legacy/{event}', [CheckoutController::class, 'create'])->n
 Route::post('/checkout/{event}', [CheckoutController::class, 'store'])->name('checkout.store');
 Route::get('/payment/{order_id}', [CheckoutController::class, 'payment'])->name('checkout.payment');
 Route::get('/success/{order_id}', [CheckoutController::class, 'success'])->name('checkout.success');
-Route::get('/ticket/{order_id}', [CheckoutController::class, 'success'])->name('ticket.show');
+Route::get('/ticket/{order_id}', [TicketController::class, 'show'])->name('ticket.show');
 Route::get('/ticket', function () { return view('ticket'); })->name('ticket');
+Route::get('/my-ticket', [MyTicketController::class, 'index'])->middleware('auth')->name('my-ticket');
 Route::post('/midtrans/callback', [MidtransWebhookController::class, 'handle']);
 
 // Google Socialite SSO

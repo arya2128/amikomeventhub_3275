@@ -119,4 +119,51 @@ class MultiTenantTest extends TestCase
         $response->assertSee('TRX-ORG-A');
         $response->assertSee('TRX-ORG-B');
     }
+
+    /**
+     * Test: Dashboard statistics are scoped by tenant.
+     */
+    public function test_organizer_dashboard_scopes_statistics()
+    {
+        // Login as organizer A
+        $response = $this->actingAs($this->organizerA)->get(route('admin.dashboard'));
+        $response->assertStatus(200);
+        $response->assertViewHas('totalRevenue', 15000);
+        $response->assertViewHas('ticketsSold', 1);
+        $response->assertViewHas('activeEvents', 1);
+        $response->assertViewHas('pendingOrders', 0);
+
+        // Login as superadmin
+        $response = $this->actingAs($this->superadmin)->get(route('admin.dashboard'));
+        $response->assertStatus(200);
+        $response->assertViewHas('totalRevenue', 40000); // 15000 + 25000
+        $response->assertViewHas('ticketsSold', 2);
+        $response->assertViewHas('activeEvents', 2);
+    }
+
+    /**
+     * Test: Organizer cannot verify/check-in tickets belonging to another organizer's events.
+     */
+    public function test_organizer_cannot_verify_other_organizers_ticket()
+    {
+        // Try verifying other organizer's ticket
+        $response = $this->actingAs($this->organizerA)
+                         ->post(route('admin.checkin.verify'), ['order_id' => $this->transactionB->order_id]);
+        
+        $response->assertStatus(403);
+        $response->assertJson([
+            'status' => 'error',
+            'message' => 'Akses Ditolak! Anda tidak berwenang memvalidasi tiket event ini.',
+        ]);
+
+        // Verifying own ticket should succeed
+        $response = $this->actingAs($this->organizerA)
+                         ->post(route('admin.checkin.verify'), ['order_id' => $this->transactionA->order_id]);
+        
+        $response->assertStatus(200);
+        $response->assertJson([
+            'status' => 'success',
+        ]);
+        $this->assertEquals('used', $this->transactionA->fresh()->status);
+    }
 }
