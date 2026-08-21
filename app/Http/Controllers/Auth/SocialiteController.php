@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
+use Illuminate\Http\Request;
 use Laravel\Socialite\Facades\Socialite;
 
 class SocialiteController extends Controller
@@ -13,8 +14,11 @@ class SocialiteController extends Controller
     /**
      * Mengarahkan pengguna ke halaman otentikasi Google.
      */
-    public function redirectToGoogle()
+    public function redirectToGoogle(Request $request)
     {
+        if ($request->has('redirect')) {
+            session(['socialite_redirect' => $request->get('redirect')]);
+        }
         return Socialite::driver('google')->redirect();
     }
 
@@ -56,6 +60,11 @@ class SocialiteController extends Controller
 
             // Login dan buat session user
             Auth::login($user);
+
+            if (session()->has('socialite_redirect')) {
+                $redirectUrl = session()->pull('socialite_redirect');
+                return redirect($redirectUrl);
+            }
 
             return redirect()->route('home');
         } catch (\Exception $e) {

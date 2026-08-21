@@ -6,6 +6,9 @@ use App\Models\Event;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use App\Models\Partner;
+use App\Models\User;
+use App\Models\Review;
+
 class HomeController extends Controller
 {
     /**
@@ -48,5 +51,30 @@ class HomeController extends Controller
         $events = $query->get();
 
         return view('katalog', compact('events'));
+    }
+
+    /**
+     * Menampilkan profil publik penyelenggara (organizer) beserta ulasan dan event miliknya.
+     */
+    public function organizerProfile(User $user)
+    {
+        // Pastikan role-nya adalah admin atau organizer
+        if (!in_array($user->role, ['admin', 'organizer'])) {
+            abort(404);
+        }
+
+        // Ambil semua event yang dibuat oleh organizer ini
+        $events = Event::where('user_id', $user->id)->latest()->get();
+
+        // Ambil semua ulasan untuk event yang dibuat oleh organizer ini
+        $reviews = Review::whereHas('event', function ($query) use ($user) {
+            $query->where('user_id', $user->id);
+        })->with('user', 'event')->latest()->get();
+
+        // Hitung rata-rata rating
+        $averageRating = $reviews->avg('rating') ?? 0;
+        $totalReviews = $reviews->count();
+
+        return view('organizer-profile', compact('user', 'events', 'reviews', 'averageRating', 'totalReviews'));
     }
 }

@@ -8,15 +8,41 @@
             <div class="sticky top-32">
                 <img src="{{ ($event->poster_path && Storage::disk('public')->exists($event->poster_path)) ? asset('storage/' . $event->poster_path) : 'https://placehold.co/400x500' }}" alt="{{ $event->title }}"
                     class="w-full rounded-[2.5rem] shadow-2xl border-8 border-white object-cover aspect-[3/4]">
+                @php
+                    $organizerName = $event->user ? $event->user->name : 'Amikom Event Hub';
+                    $words = explode(' ', $organizerName);
+                    $initials = '';
+                    foreach (array_slice($words, 0, 2) as $w) {
+                        $initials .= strtoupper(substr($w, 0, 1));
+                    }
+                    
+                    $avgRating = 0;
+                    if ($event->user_id) {
+                        $avgRating = \App\Models\Review::whereHas('event', function($q) use ($event) {
+                            $q->where('user_id', $event->user_id);
+                        })->avg('rating') ?? 0;
+                    }
+                @endphp
                 <div class="mt-8 p-6 bg-white rounded-3xl border border-slate-100 shadow-sm">
                     <h4 class="font-bold mb-4">Penyelenggara</h4>
                     <div class="flex items-center gap-4">
                         <div class="w-12 h-12 bg-indigo-100 rounded-full flex items-center justify-center text-indigo-600 font-bold">
-                            AE
+                            {{ $initials }}
                         </div>
                         <div>
-                            <p class="font-bold text-slate-800">Amikom Event Hub</p>
-                            <p class="text-xs text-slate-500">Verified Organizer</p>
+                            @if($event->user)
+                                <a href="{{ route('organizer.profile', $event->user->id) }}" class="font-bold text-slate-800 hover:text-indigo-600 transition block">
+                                    {{ $organizerName }}
+                                </a>
+                            @else
+                                <p class="font-bold text-slate-800">{{ $organizerName }}</p>
+                            @endif
+                            <p class="text-xs text-slate-500">
+                                Verified Organizer
+                                @if($event->user)
+                                    • <span class="text-amber-500">★</span> {{ number_format($avgRating, 1) }}
+                                @endif
+                            </p>
                         </div>
                     </div>
                 </div>

@@ -30,6 +30,7 @@ Route::get('/bantuan', function () { return view('bantuan'); })->name('bantuan')
 Route::get('/kontak', function () { return view('kontak'); })->name('kontak');
 
 Route::get('/event/{event}', [EventController::class, 'show'])->name('event.show');
+Route::get('/organizer/{user}', [HomeController::class, 'organizerProfile'])->name('organizer.profile');
 Route::post('/event/{event}/reviews', [ReviewController::class, 'store'])->middleware('auth')->name('event.reviews.store');
 Route::get('/checkout/{event}', [CheckoutController::class, 'create'])->name('checkout.create');
 Route::get('/checkout-legacy/{event}', [CheckoutController::class, 'create'])->name('checkout');
