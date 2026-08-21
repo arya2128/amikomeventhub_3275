@@ -32,6 +32,7 @@
             <span class="text-xl font-bold tracking-tight">AmikomEventHub</span>
         </a>
 
+        <!-- Desktop Navigation -->
         <div class="hidden md:flex items-center gap-8 font-medium">
             <a href="{{ route('katalog') }}" class="hover:text-indigo-600 transition">Jelajahi</a>
             <a href="{{ route('profil') }}" class="hover:text-indigo-600 transition">Profil</a>
@@ -53,8 +54,39 @@
                 <a href="{{ route('login') }}" class="px-5 py-2.5 bg-indigo-600 text-white rounded-xl font-bold hover:bg-indigo-700 transition">Masuk</a>
             @endif
         </div>
+
+        <!-- Mobile Action Buttons -->
+        <div class="flex items-center gap-3 md:hidden">
+            @if(Auth::check())
+                <a href="{{ route('my-ticket') }}" class="px-3 py-1.5 bg-indigo-50 text-indigo-600 rounded-xl text-xs font-bold">Tiket Saya</a>
+                @if(in_array(Auth::user()->role, ['admin', 'organizer']))
+                    <a href="{{ route('admin.dashboard') }}" class="px-3 py-1.5 bg-indigo-600 text-white rounded-xl text-xs font-bold">Admin</a>
+                @endif
+                <form action="{{ route('admin.logout') }}" method="POST" class="inline">
+                    @csrf
+                    <button type="submit" class="px-3 py-1.5 bg-rose-50 text-rose-600 rounded-xl text-xs font-bold">Logout</button>
+                </form>
+            @else
+                <a href="{{ route('login') }}" class="px-4 py-2 bg-indigo-600 text-white rounded-xl text-sm font-bold shadow-md shadow-indigo-100 hover:bg-indigo-700 transition">
+                    Masuk
+                </a>
+            @endif
+            <button id="mobile-menu-btn" class="p-2 text-slate-600 hover:text-indigo-600 focus:outline-none" onclick="document.getElementById('mobile-menu').classList.toggle('hidden')">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                </svg>
+            </button>
+        </div>
         
     </nav>
+
+    <!-- Mobile Dropdown Menu -->
+    <div id="mobile-menu" class="hidden md:hidden mx-4 mt-2 p-6 glass rounded-2xl border border-white/20 shadow-lg space-y-4 font-medium sticky top-28 z-30">
+        <a href="{{ route('katalog') }}" class="block py-2 text-slate-700 hover:text-indigo-600 font-bold">🔍 Jelajahi Event</a>
+        <a href="{{ route('profil') }}" class="block py-2 text-slate-700 hover:text-indigo-600 font-bold">ℹ️ Profil Kampus</a>
+        <a href="{{ route('bantuan') }}" class="block py-2 text-slate-700 hover:text-indigo-600 font-bold">❓ Cara Pesan & Bantuan</a>
+        <a href="{{ route('kontak') }}" class="block py-2 text-slate-700 hover:text-indigo-600 font-bold">📞 Hubungi Kami</a>
+    </div>
 
     @yield('content')
 
