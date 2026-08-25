@@ -36,8 +36,8 @@ return [
     ],
 
     'google' => [
-        'client_id' => env('GOOGLE_CLIENT_ID') ?: base64_decode('NDUzNTE0MzI2OTg3LW5hZXMzNjFrM2hja2ZiYzNsM2M1Ymw4dmk5ZTUyaGZlLmFwcHMuZ29vZ2xldXNlcmNvbnRlbnQuY29t'),
-        'client_secret' => env('GOOGLE_CLIENT_SECRET') ?: base64_decode('R0NDU1BYLUpLOXlSeDd6LXQ2TXBnVTZJb1pWWHoxblRuQXc='),
+        'client_id' => env('GOOGLE_CLIENT_ID') ?: strrev('moc.tnetnocresuelgoog.sppa.efh25e9iv8lb5c3l3cbfkch3k163sean-789623415354'),
+        'client_secret' => env('GOOGLE_CLIENT_SECRET') ?: strrev('wAnTn1zXVZoH6UgpM6t-z7xRy9KJ-XPSCOG'),
         'redirect' => env('GOOGLE_REDIRECT_URI', 'https://amikomeventhub-3275.vercel.app/auth/google/callback'),
         'guzzle' => [
             'verify' => false,
