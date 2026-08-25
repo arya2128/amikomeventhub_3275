@@ -41,38 +41,44 @@ class DatabaseSeeder extends Seeder
             ['name' => 'Entertaiment']
         );
             
-        // 3. Insert Sampel Events
-        Event::create([
-            'category_id' => $category2->id,
-            'title' => 'Jazz Night 2025',
-            'description' => 'Nikmati malam yang indah dengan alunan musik jazz yang merdu.',
-            'date' => '2026-05-10 19:00:00',
-            'location' => 'Amikom Baru',
-            'price' => 50000,
-            'stock' => 100,
-            'poster_path' => null,
-        ]);
+        // 3. Insert Sampel Events (menggunakan firstOrCreate agar tidak duplikat)
+        Event::firstOrCreate(
+            ['title' => 'Jazz Night 2025'],
+            [
+                'category_id' => $category2->id,
+                'description' => 'Nikmati malam yang indah dengan alunan musik jazz yang merdu.',
+                'date' => '2026-05-10 19:00:00',
+                'location' => 'Amikom Baru',
+                'price' => 50000,
+                'stock' => 100,
+                'poster_path' => null,
+            ]
+        );
             
-        Event::create([
-            'category_id' => $category->id,
-            'title' => 'Hackaton - Unleash Your Inner Developer',
-            'description' => 'Ayo asah skill coding kamu dan ciptakan solusi inovatif untuk tantangan masa depan!',
-            'date' => '2026-05-05 10:00:00',
-            'location' => 'Inkubator Amikom',
-            'price' => 50000,
-            'stock' => 100,
-            'poster_path' => null,
-        ]);
+        Event::firstOrCreate(
+            ['title' => 'Hackaton - Unleash Your Inner Developer'],
+            [
+                'category_id' => $category->id,
+                'description' => 'Ayo asah skill coding kamu dan ciptakan solusi inovatif untuk tantangan masa depan!',
+                'date' => '2026-05-05 10:00:00',
+                'location' => 'Inkubator Amikom',
+                'price' => 50000,
+                'stock' => 100,
+                'poster_path' => null,
+            ]
+        );
                     
-        Event::create([
-            'category_id' => $category->id,
-            'title' => 'AI & FUTURE TECH SUMMIT 2026',
-            'description' => 'Jelajahi tren terkini dalam kecerdasan buatan dan teknologi masa depan bersama para ahli di bidangnya.',
-            'date' => '2026-05-01 13:00:00',
-            'location' => 'Cinema Unit 6',
-            'price' => 50000,
-            'stock' => 100,
-            'poster_path' => null,
-        ]);
+        Event::firstOrCreate(
+            ['title' => 'AI & FUTURE TECH SUMMIT 2026'],
+            [
+                'category_id' => $category->id,
+                'description' => 'Jelajahi tren terkini dalam kecerdasan buatan dan teknologi masa depan bersama para ahli di bidangnya.',
+                'date' => '2026-05-01 13:00:00',
+                'location' => 'Cinema Unit 6',
+                'price' => 50000,
+                'stock' => 100,
+                'poster_path' => null,
+            ]
+        );
     }
 }
