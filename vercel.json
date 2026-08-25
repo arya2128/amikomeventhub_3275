@@ -33,6 +33,7 @@
     "VIEW_COMPILED_PATH": "/tmp/storage/framework/views",
     "CACHE_STORE": "array",
     "SESSION_DRIVER": "database",
-    "LOG_CHANNEL": "stderr"
+    "LOG_CHANNEL": "stderr",
+    "GOOGLE_REDIRECT_URI": "https://amikomeventhub-3275.vercel.app/auth/google/callback"
   }
 }
