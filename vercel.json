@@ -18,6 +18,17 @@
     }
   ],
   "env": {
+    "APP_NAME": "AmikomEventHub",
+    "APP_ENV": "production",
+    "APP_KEY": "base64:NUkjAOZDMmnte8y9PpfFobjXekgkvs/x3gYdhCSohwA=",
+    "APP_DEBUG": "true",
+    "APP_URL": "https://amikomeventhub-3275.vercel.app",
+    "DB_CONNECTION": "mysql",
+    "DB_HOST": "gateway01.ap-southeast-1.prod.aws.tidbcloud.com",
+    "DB_PORT": "4000",
+    "DB_DATABASE": "test",
+    "DB_USERNAME": "2wzR4q2HyxnRSkE.root",
+    "DB_PASSWORD": "WWZICHTNFOH6r5Ub",
     "APP_CONFIG_CACHE": "/tmp/config.php",
     "APP_EVENTS_CACHE": "/tmp/events.php",
     "APP_PACKAGES_CACHE": "/tmp/packages.php",
