@@ -37,7 +37,6 @@ foreach ($caCandidates as $path) {
     }
 }
 
-// Jika belum ada, download langsung ke /tmp/cacert.pem
 if (!$validCa) {
     $tmpCa = '/tmp/cacert.pem';
     $data = @file_get_contents('https://curl.se/ca/cacert.pem');
@@ -51,6 +50,8 @@ putenv("VIEW_COMPILED_PATH={$storagePath}/framework/views");
 putenv("SESSION_DRIVER=cookie");
 putenv("CACHE_STORE=array");
 putenv("LOG_CHANNEL=stderr");
+putenv("APP_MAINTENANCE_DRIVER=file");
+putenv("APP_MAINTENANCE_STORE=file");
 if ($validCa) {
     putenv("MYSQL_ATTR_SSL_CA={$validCa}");
 }

@@ -24,6 +24,8 @@
     "APP_KEY": "base64:NUkjAOZDMmnte8y9PpfFobjXekgkvs/x3gYdhCSohwA=",
     "APP_DEBUG": "true",
     "APP_URL": "https://amikomeventhub-3275.vercel.app",
+    "APP_MAINTENANCE_DRIVER": "file",
+    "APP_MAINTENANCE_STORE": "file",
     "DB_CONNECTION": "mysql",
     "DB_HOST": "gateway01.ap-southeast-1.prod.aws.tidbcloud.com",
     "DB_PORT": "4000",
