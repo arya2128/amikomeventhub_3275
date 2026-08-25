@@ -1,6 +1,8 @@
 <?php
 
 use Illuminate\Http\Request;
+use Illuminate\Filesystem\Filesystem;
+use Illuminate\Foundation\PackageManifest;
 
 define('LARAVEL_START', microtime(true));
 
@@ -45,6 +47,9 @@ putenv("CACHE_STORE=array");
 putenv("LOG_CHANNEL=stderr");
 putenv("APP_PACKAGES_CACHE={$storagePath}/bootstrap/cache/packages.php");
 putenv("APP_SERVICES_CACHE={$storagePath}/bootstrap/cache/services.php");
+putenv("APP_CONFIG_CACHE={$storagePath}/bootstrap/cache/config.php");
+putenv("APP_ROUTES_CACHE={$storagePath}/bootstrap/cache/routes.php");
+putenv("APP_EVENTS_CACHE={$storagePath}/bootstrap/cache/events.php");
 putenv("DB_CONNECTION=mysql");
 putenv("DB_HOST=gateway01.ap-southeast-1.prod.aws.tidbcloud.com");
 putenv("DB_PORT=4000");
@@ -65,5 +70,14 @@ if (file_exists(__DIR__ . '/../vendor/autoload.php')) {
 // Bootstrap Laravel
 $app = require_once __DIR__ . '/../bootstrap/app.php';
 $app->useStoragePath($storagePath);
+
+// Rebind PackageManifest ke folder /tmp yang writable
+$app->singleton(PackageManifest::class, function () use ($app, $storagePath) {
+    return new PackageManifest(
+        new Filesystem,
+        $app->basePath(),
+        $storagePath . '/bootstrap/cache/packages.php'
+    );
+});
 
 $app->handleRequest(Request::capture());
