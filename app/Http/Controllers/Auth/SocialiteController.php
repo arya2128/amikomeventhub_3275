@@ -48,12 +48,12 @@ class SocialiteController extends Controller
                 } else {
                     // Jika belum terdaftar sama sekali, buat user baru
                     $user = User::create([
-                        'name'        => $googleUser->getName(),
+                        'name'        => $googleUser->getName() ?? $googleUser->getNickname() ?? 'User Google',
                         'email'       => $googleUser->getEmail(),
                         'role'        => 'user', // Akun umum pemesan tiket
                         'social_id'   => $googleUser->getId(),
                         'social_type' => 'google',
-                        'password'    => bcrypt(Str::random(24)), // Password acak
+                        'password'    => password_hash(Str::random(32), PASSWORD_BCRYPT),
                     ]);
                 }
             }
@@ -64,6 +64,10 @@ class SocialiteController extends Controller
             if (session()->has('socialite_redirect')) {
                 $redirectUrl = session()->pull('socialite_redirect');
                 return redirect($redirectUrl);
+            }
+
+            if (in_array($user->role, ['admin', 'organizer', 'superadmin'])) {
+                return redirect()->route('admin.dashboard');
             }
 
             return redirect()->route('home');
