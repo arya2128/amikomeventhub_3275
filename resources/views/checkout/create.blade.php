@@ -59,14 +59,14 @@
                     <label class="block text-sm font-bold text-slate-700 mb-2 uppercase tracking-wide">Nama Lengkap</label>
                     <input type="text" name="customer_name" placeholder="Masukkan nama sesuai identitas"
                         class="w-full px-5 py-4 bg-white border-2 border-slate-100 rounded-2xl focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-600 outline-none transition font-medium"
-                        required value="{{ old('customer_name') }}">
+                        required value="{{ old('customer_name', auth()->user()->name ?? '') }}">
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                         <label class="block text-sm font-bold text-slate-700 mb-2 uppercase tracking-wide">Email Aktif</label>
                         <input type="email" name="customer_email" placeholder="contoh@gmail.com"
                             class="w-full px-5 py-4 bg-white border-2 border-slate-100 rounded-2xl focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-600 outline-none transition font-medium"
-                            required value="{{ old('customer_email') }}">
+                            required value="{{ old('customer_email', auth()->user()->email ?? '') }}">
                         <p class="text-[10px] text-slate-400 mt-2 font-bold uppercase tracking-tighter">*E-Ticket akan dikirim ke email ini</p>
                     </div>
                     <div>

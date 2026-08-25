@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Log;
 class TransactionController extends Controller
 {
     /**
-     * Display all transactions scoped by tenant.
+     * Display all transactions scoped by tenant with full statistics and filtering.
      */
     public function index(Request $request)
     {
@@ -25,40 +25,51 @@ class TransactionController extends Controller
             });
         }
 
-        // Filter berdasarkan status jika ada
-        if ($request->has('status') && $request->status != '') {
-            $query->where('status', $request->status);
+        // Filter berdasarkan status
+        if ($request->filled('status')) {
+            $statusInput = strtolower($request->status);
+            if (in_array($statusInput, ['completed', 'success', 'settlement'])) {
+                $query->whereIn('status', ['completed', 'COMPLETED', 'success', 'SUCCESS', 'settlement', 'SETTLEMENT']);
+            } elseif ($statusInput === 'pending') {
+                $query->whereIn('status', ['pending', 'PENDING', 'Pending']);
+            } elseif ($statusInput === 'failed') {
+                $query->whereIn('status', ['failed', 'FAILED', 'expire', 'EXPIRE', 'deny', 'DENY']);
+            } else {
+                $query->where('status', $request->status);
+            }
         }
 
-        // Filter berdasarkan pencarian order_id atau customer_name
-        if ($request->has('search') && $request->search != '') {
-            $query->where(function($q) use ($request) {
-                $q->where('order_id', 'LIKE', '%' . $request->search . '%')
-                  ->orWhere('customer_name', 'LIKE', '%' . $request->search . '%')
-                  ->orWhere('customer_email', 'LIKE', '%' . $request->search . '%');
+        // Filter pencarian
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('order_id', 'LIKE', '%' . $search . '%')
+                  ->orWhere('customer_name', 'LIKE', '%' . $search . '%')
+                  ->orWhere('customer_email', 'LIKE', '%' . $search . '%')
+                  ->orWhereHas('event', function($eq) use ($search) {
+                      $eq->where('title', 'LIKE', '%' . $search . '%');
+                  });
             });
         }
 
-        $transactions = $query->paginate(15);
+        $transactions = $query->paginate(15)->withQueryString();
 
         // Statistics counts scoped by tenant
-        if ($user->role === 'admin') {
-            $stats = [
-                'total' => Transaction::count(),
-                'pending' => Transaction::where('status', 'pending')->count(),
-                'completed' => Transaction::where('status', 'completed')->count(),
-                'failed' => Transaction::where('status', 'failed')->count(),
-                'cancelled' => Transaction::where('status', 'cancelled')->count(),
-            ];
-        } else {
-            $stats = [
-                'total' => Transaction::whereHas('event', function ($q) use ($user) { $q->where('user_id', $user->id); })->count(),
-                'pending' => Transaction::where('status', 'pending')->whereHas('event', function ($q) use ($user) { $q->where('user_id', $user->id); })->count(),
-                'completed' => Transaction::where('status', 'completed')->whereHas('event', function ($q) use ($user) { $q->where('user_id', $user->id); })->count(),
-                'failed' => Transaction::where('status', 'failed')->whereHas('event', function ($q) use ($user) { $q->where('user_id', $user->id); })->count(),
-                'cancelled' => Transaction::where('status', 'cancelled')->whereHas('event', function ($q) use ($user) { $q->where('user_id', $user->id); })->count(),
-            ];
+        $baseQuery = Transaction::query();
+        if ($user->role !== 'admin') {
+            $baseQuery->whereHas('event', function ($q) use ($user) {
+                $q->where('user_id', $user->id);
+            });
         }
+
+        $stats = [
+            'total' => (clone $baseQuery)->count(),
+            'pending' => (clone $baseQuery)->whereIn('status', ['pending', 'PENDING', 'Pending'])->count(),
+            'completed' => (clone $baseQuery)->whereIn('status', ['completed', 'COMPLETED', 'success', 'SUCCESS', 'settlement', 'SETTLEMENT'])->count(),
+            'failed' => (clone $baseQuery)->whereIn('status', ['failed', 'FAILED', 'expire', 'EXPIRE', 'deny', 'DENY'])->count(),
+            'cancelled' => (clone $baseQuery)->whereIn('status', ['cancelled', 'CANCELLED', 'cancel', 'CANCEL'])->count(),
+            'total_revenue' => (clone $baseQuery)->whereIn('status', ['completed', 'COMPLETED', 'success', 'SUCCESS', 'settlement', 'SETTLEMENT'])->sum('total_price'),
+        ];
 
         return view('admin.transactions.index', compact('transactions', 'stats'));
     }
@@ -111,7 +122,7 @@ class TransactionController extends Controller
         }
 
         $request->validate([
-            'status' => 'required|in:pending,completed,failed,cancelled',
+            'status' => 'required|in:pending,completed,failed,cancelled,success,settlement',
         ]);
 
         $oldStatus = $transaction->status;
@@ -121,7 +132,6 @@ class TransactionController extends Controller
             'status' => $newStatus,
         ]);
 
-        // Log status change
         Log::info("Transaction {$transaction->order_id} status changed from {$oldStatus} to {$newStatus}");
 
         return redirect()->route('admin.transactions.show', $transaction->id)
@@ -156,7 +166,7 @@ class TransactionController extends Controller
         $request->validate([
             'transaction_ids' => 'required|array',
             'transaction_ids.*' => 'integer|exists:transactions,id',
-            'status' => 'required|in:pending,completed,failed,cancelled',
+            'status' => 'required|in:pending,completed,failed,cancelled,success,settlement',
         ]);
 
         $user = auth()->user();
