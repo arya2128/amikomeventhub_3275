@@ -14,6 +14,10 @@ if (!is_dir($storagePath)) {
     @mkdir($storagePath . '/framework/sessions', 0755, true);
     @mkdir($storagePath . '/logs', 0755, true);
     @mkdir($storagePath . '/app/public', 0755, true);
+    @mkdir($storagePath . '/bootstrap/cache', 0755, true);
+}
+if (!is_dir($storagePath . '/bootstrap/cache')) {
+    @mkdir($storagePath . '/bootstrap/cache', 0755, true);
 }
 
 // Cari path CA certificate yang valid di server
@@ -39,6 +43,8 @@ putenv("VIEW_COMPILED_PATH={$storagePath}/framework/views");
 putenv("SESSION_DRIVER=cookie");
 putenv("CACHE_STORE=array");
 putenv("LOG_CHANNEL=stderr");
+putenv("APP_PACKAGES_CACHE={$storagePath}/bootstrap/cache/packages.php");
+putenv("APP_SERVICES_CACHE={$storagePath}/bootstrap/cache/services.php");
 putenv("DB_CONNECTION=mysql");
 putenv("DB_HOST=gateway01.ap-southeast-1.prod.aws.tidbcloud.com");
 putenv("DB_PORT=4000");
