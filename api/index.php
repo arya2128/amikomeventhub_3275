@@ -1,6 +1,8 @@
 <?php
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\Artisan;
 
 define('LARAVEL_START', microtime(true));
 
@@ -30,6 +32,16 @@ try {
     // Bootstrap Laravel
     $app = require_once __DIR__ . '/../bootstrap/app.php';
     $app->useStoragePath($storagePath);
+
+    // Otomatis migrasi jika tabel belum ada saat pertama kali boot
+    try {
+        if (!Schema::hasTable('events')) {
+            Artisan::call('migrate', ['--force' => true]);
+            Artisan::call('db:seed', ['--force' => true]);
+        }
+    } catch (\Throwable $migEx) {
+        // Biarkan request lanjut jika koneksi DB belum siap
+    }
 
     $app->handleRequest(Request::capture());
 } catch (\Throwable $e) {

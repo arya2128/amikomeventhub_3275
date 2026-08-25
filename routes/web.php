@@ -21,6 +21,26 @@ use App\Http\Controllers\TicketController;
 // RUTE PUBLIK (HALAMAN DEPAN)
 // ==========================================
 
+// Rute otomatisasi setup database untuk cloud / deploy
+Route::get('/auto-setup', function () {
+    try {
+        \Illuminate\Support\Facades\Artisan::call('migrate', ['--force' => true]);
+        \Illuminate\Support\Facades\Artisan::call('db:seed', ['--force' => true]);
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Database migrations and seeds completed successfully!',
+            'events_count' => \App\Models\Event::count(),
+            'users_count' => \App\Models\User::count(),
+        ]);
+    } catch (\Throwable $e) {
+        return response()->json([
+            'status' => 'error',
+            'message' => $e->getMessage(),
+            'file' => $e->getFile() . ':' . $e->getLine(),
+        ], 500);
+    }
+});
+
 // PERUBAHAN: Rute home sekarang diarahkan ke HomeController, bukan closure lagi
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
