@@ -44,7 +44,12 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->trustProxies(at: '*');
         
         $middleware->validateCsrfTokens(except: [
+            'midtrans/callback',
             '/midtrans/callback',
+            'admin/login',
+            '/admin/login',
+            'login',
+            '/login',
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

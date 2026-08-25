@@ -16,7 +16,7 @@ class AdminMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (!Auth::check() || !in_array(Auth::user()->role, ['admin', 'organizer'])) {
+        if (!Auth::check() || !in_array(Auth::user()->role, ['admin', 'organizer', 'superadmin'])) {
             return redirect()->route('admin.login')->with('error', 'Akses ditolak! Silakan login terlebih dahulu.');
         }
 
