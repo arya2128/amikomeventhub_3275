@@ -28,16 +28,7 @@
             <!-- Rincian Pesanan -->
             <div class="bg-white rounded-3xl border border-slate-200 p-8 shadow-sm">
                 <h3 class="text-xl font-bold mb-6 border-b pb-4">Pesanan Anda</h3>
-                <div class="flex gap-6 items-start">
-                    @if($event->poster_path)
-                        <img src="{{ asset('storage/' . $event->poster_path) }}" alt="{{ $event->title }}" class="w-24 h-24 rounded-2xl object-cover aspect-square">
-                    @else
-                        <div class="w-24 h-24 rounded-2xl bg-indigo-100 flex items-center justify-center text-indigo-400 aspect-square">
-                            <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                            </svg>
-                        </div>
-                    @endif
+                    <img src="{{ $event->poster_url }}" alt="{{ $event->title }}" class="w-24 h-24 rounded-2xl object-cover aspect-square shadow-sm" onerror="this.onerror=null;this.src='/assets/concert.png';">
                     <div>
                         <h4 class="font-extrabold text-lg">{{ $event->title }}</h4>
                         <p class="text-slate-500 text-sm mt-1">

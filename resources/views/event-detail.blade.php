@@ -6,8 +6,9 @@
     <main class="max-w-7xl mx-auto px-6 py-12 grid grid-cols-1 lg:grid-cols-3 gap-12">
         <div class="lg:col-span-1">
             <div class="sticky top-32">
-                <img src="{{ ($event->poster_path && Storage::disk('public')->exists($event->poster_path)) ? asset('storage/' . $event->poster_path) : 'https://placehold.co/400x500' }}" alt="{{ $event->title }}"
-                    class="w-full rounded-[2.5rem] shadow-2xl border-8 border-white object-cover aspect-[3/4]">
+                <img src="{{ $event->poster_url }}" alt="{{ $event->title }}"
+                    class="w-full rounded-[2.5rem] shadow-2xl border-8 border-white object-cover aspect-[3/4]"
+                    onerror="this.onerror=null;this.src='/assets/concert.png';">
                 @php
                     $organizerName = $event->user ? $event->user->name : 'Amikom Event Hub';
                     $words = explode(' ', $organizerName);

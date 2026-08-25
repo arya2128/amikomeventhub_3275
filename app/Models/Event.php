@@ -28,6 +28,25 @@ class Event extends Model
     public function reviews() {
         return $this->hasMany(Review::class);
     }
+
+    public function getPosterUrlAttribute(): string
+    {
+        if (!empty($this->poster_path)) {
+            if (str_starts_with($this->poster_path, 'http://') || str_starts_with($this->poster_path, 'https://')) {
+                return $this->poster_path;
+            }
+            return asset('storage/' . $this->poster_path);
+        }
+
+        $text = strtolower($this->title . ' ' . ($this->category->name ?? ''));
+        if (str_contains($text, 'hackaton') || str_contains($text, 'hackathon') || str_contains($text, 'developer') || str_contains($text, 'coding')) {
+            return asset('assets/hackathon.png');
+        }
+        if (str_contains($text, 'ai') || str_contains($text, 'workshop') || str_contains($text, 'summit') || str_contains($text, 'tech')) {
+            return asset('assets/workshop.png');
+        }
+        return asset('assets/concert.png');
+    }
 }
 
 
