@@ -41,11 +41,11 @@ if (isset($_GET['diagnostic']) || (isset($_SERVER['REQUEST_URI']) && str_starts_
         $user = getenv('DB_USERNAME') ?: '2wzR4q2HyxnRSkE.root';
         $pass = getenv('DB_PASSWORD') ?: 'WWZICHTNFOH6r5Ub';
         
-        $sslCa = is_file('/etc/ssl/certs/ca-certificates.crt') ? '/etc/ssl/certs/ca-certificates.crt' : (
-            is_file('/etc/pki/tls/certs/ca-bundle.crt') ? '/etc/pki/tls/certs/ca-bundle.crt' : (
-                is_file('/etc/ssl/cert.pem') ? '/etc/ssl/cert.pem' : null
-            )
+        $sslCa = is_file(__DIR__ . '/cacert.pem') ? __DIR__ . '/cacert.pem' : (
+            is_file(__DIR__ . '/../cacert.pem') ? __DIR__ . '/../cacert.pem' : null
         );
+
+        echo "CA File Path: " . ($sslCa ?? 'NONE') . " (Exists: " . (file_exists($sslCa ?? '') ? 'YES' : 'NO') . ")\n";
 
         $pdoOptions = [
             PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
