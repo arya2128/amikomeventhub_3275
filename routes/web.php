@@ -23,24 +23,6 @@ use App\Http\Controllers\TicketController;
 
 Route::get('/ping', function () { return 'PONG ' . date('Y-m-d H:i:s'); });
 
-Route::get('/diag', function () {
-    $res = [
-        'php' => phpversion(),
-        'bcrypt_defined' => defined('PASSWORD_BCRYPT'),
-    ];
-    try {
-        $res['hash_make'] = \Illuminate\Support\Facades\Hash::make('password');
-    } catch (\Throwable $e) {
-        $res['hash_make_error'] = $e->getMessage() . ' in ' . $e->getFile() . ':' . $e->getLine();
-    }
-    try {
-        $res['raw_password_hash'] = password_hash('password', PASSWORD_BCRYPT, ['cost' => 12]);
-    } catch (\Throwable $e) {
-        $res['raw_password_hash_error'] = $e->getMessage() . ' in ' . $e->getFile() . ':' . $e->getLine();
-    }
-    return response()->json($res);
-});
-
 // Rute otomatisasi setup database untuk cloud / deploy
 Route::get('/auto-setup', function () {
     try {
