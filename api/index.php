@@ -40,11 +40,23 @@ if (isset($_GET['diagnostic']) || (isset($_SERVER['REQUEST_URI']) && str_starts_
         $db = getenv('DB_DATABASE') ?: 'test';
         $user = getenv('DB_USERNAME') ?: '2wzR4q2HyxnRSkE.root';
         $pass = getenv('DB_PASSWORD') ?: 'WWZICHTNFOH6r5Ub';
-        $pdo = new PDO("mysql:host={$host};port={$port};dbname={$db};charset=utf8mb4", $user, $pass, [
-            PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT => false,
+        
+        $sslCa = is_file('/etc/ssl/certs/ca-certificates.crt') ? '/etc/ssl/certs/ca-certificates.crt' : (
+            is_file('/etc/pki/tls/certs/ca-bundle.crt') ? '/etc/pki/tls/certs/ca-bundle.crt' : (
+                is_file('/etc/ssl/cert.pem') ? '/etc/ssl/cert.pem' : null
+            )
+        );
+
+        $pdoOptions = [
             PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
             PDO::ATTR_TIMEOUT => 5
-        ]);
+        ];
+        if ($sslCa) {
+            $pdoOptions[PDO::MYSQL_ATTR_SSL_CA] = $sslCa;
+        }
+        $pdoOptions[PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT] = false;
+
+        $pdo = new PDO("mysql:host={$host};port={$port};dbname={$db};charset=utf8mb4", $user, $pass, $pdoOptions);
         echo "PDO Connection: SUCCESS!\n";
         $stmt = $pdo->query("SHOW TABLES");
         echo "Tables in {$db}: " . implode(', ', $stmt->fetchAll(PDO::FETCH_COLUMN)) . "\n";
