@@ -64,7 +64,7 @@ return [
                     PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA') ?: (
                         is_file('/tmp/cacert.pem') ? '/tmp/cacert.pem' : (
                             is_file(base_path('cacert.pem')) ? base_path('cacert.pem') : (
-                                is_file('/etc/ssl/certs/ca-certificates.crt') ? '/etc/ssl/certs/ca-certificates.crt' : null
+                                is_file('/etc/pki/tls/certs/ca-bundle.crt') ? '/etc/pki/tls/certs/ca-bundle.crt' : null
                             )
                         )
                     ),

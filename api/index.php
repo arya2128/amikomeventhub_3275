@@ -18,18 +18,32 @@ if (!is_dir($storagePath)) {
     @mkdir($storagePath . '/app/public', 0755, true);
 }
 
-// Pastikan CA bundle selalu siap di /tmp/cacert.pem
-$tmpCa = '/tmp/cacert.pem';
-if (!file_exists($tmpCa) || filesize($tmpCa) < 1000) {
-    if (file_exists(__DIR__ . '/cacert.pem')) {
-        @copy(__DIR__ . '/cacert.pem', $tmpCa);
-    } elseif (file_exists(__DIR__ . '/../cacert.pem')) {
-        @copy(__DIR__ . '/../cacert.pem', $tmpCa);
-    } else {
-        $downloaded = @file_get_contents('https://curl.se/ca/cacert.pem');
-        if ($downloaded) {
-            @file_put_contents($tmpCa, $downloaded);
-        }
+// Cari path CA certificate yang valid di server
+$caCandidates = [
+    '/etc/pki/tls/certs/ca-bundle.crt',
+    '/etc/ssl/certs/ca-certificates.crt',
+    '/etc/ssl/certs/ca-bundle.crt',
+    '/etc/ssl/cert.pem',
+    __DIR__ . '/cacert.pem',
+    __DIR__ . '/../cacert.pem',
+    '/tmp/cacert.pem',
+];
+
+$validCa = null;
+foreach ($caCandidates as $path) {
+    if (file_exists($path) && filesize($path) > 1000) {
+        $validCa = $path;
+        break;
+    }
+}
+
+// Jika belum ada, download langsung ke /tmp/cacert.pem
+if (!$validCa) {
+    $tmpCa = '/tmp/cacert.pem';
+    $data = @file_get_contents('https://curl.se/ca/cacert.pem');
+    if ($data && strlen($data) > 1000) {
+        @file_put_contents($tmpCa, $data);
+        $validCa = $tmpCa;
     }
 }
 
@@ -37,7 +51,9 @@ putenv("VIEW_COMPILED_PATH={$storagePath}/framework/views");
 putenv("SESSION_DRIVER=cookie");
 putenv("CACHE_STORE=array");
 putenv("LOG_CHANNEL=stderr");
-putenv("MYSQL_ATTR_SSL_CA={$tmpCa}");
+if ($validCa) {
+    putenv("MYSQL_ATTR_SSL_CA={$validCa}");
+}
 
 // Endpoint diagnostik langsung tanpa Laravel boot
 if (isset($_GET['diagnostic']) || (isset($_SERVER['REQUEST_URI']) && str_starts_with($_SERVER['REQUEST_URI'], '/diagnostic'))) {
@@ -49,8 +65,13 @@ if (isset($_GET['diagnostic']) || (isset($_SERVER['REQUEST_URI']) && str_starts_
     echo "DB_PORT: " . getenv('DB_PORT') . "\n";
     echo "DB_DATABASE: " . getenv('DB_DATABASE') . "\n";
     echo "DB_USERNAME: " . getenv('DB_USERNAME') . "\n";
-    echo "CA File Path: " . $tmpCa . " (Exists: " . (file_exists($tmpCa) ? 'YES, ' . filesize($tmpCa) . ' bytes' : 'NO') . ")\n\n";
-    echo "=== TESTING TIDB CONNECTION ===\n";
+    echo "Chosen CA Path: " . ($validCa ?? 'NONE') . "\n\n";
+
+    echo "=== CA CANDIDATES STATUS ===\n";
+    foreach ($caCandidates as $c) {
+        echo $c . ": " . (file_exists($c) ? "EXISTS (" . filesize($c) . " bytes)" : "NOT FOUND") . "\n";
+    }
+    echo "\n=== TESTING TIDB CONNECTION ===\n";
     try {
         $host = getenv('DB_HOST') ?: 'gateway01.ap-southeast-1.prod.aws.tidbcloud.com';
         $port = getenv('DB_PORT') ?: '4000';
@@ -61,9 +82,10 @@ if (isset($_GET['diagnostic']) || (isset($_SERVER['REQUEST_URI']) && str_starts_
         $pdoOptions = [
             PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
             PDO::ATTR_TIMEOUT => 8,
-            PDO::MYSQL_ATTR_SSL_CA => $tmpCa,
-            PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT => false,
         ];
+        if ($validCa) {
+            $pdoOptions[PDO::MYSQL_ATTR_SSL_CA] = $validCa;
+        }
 
         $pdo = new PDO("mysql:host={$host};port={$port};dbname={$db};charset=utf8mb4", $user, $pass, $pdoOptions);
         echo "PDO Connection: SUCCESS!\n";
