@@ -43,6 +43,8 @@ foreach ($caCandidates as $path) {
 // Injeksi environment variables yang valid
 putenv("VIEW_COMPILED_PATH={$storagePath}/framework/views");
 putenv("SESSION_DRIVER=database");
+putenv("SESSION_LIFETIME=120");
+putenv("SESSION_EXPIRE_ON_CLOSE=false");
 putenv("SESSION_SECURE_COOKIE=true");
 putenv("SESSION_SAME_SITE=lax");
 putenv("SESSION_DOMAIN=");
