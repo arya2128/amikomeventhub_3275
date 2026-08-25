@@ -71,9 +71,26 @@ if ($validCa) {
     putenv("MYSQL_ATTR_SSL_CA={$validCa}");
 }
 
-// Autoload Composer
-if (file_exists(__DIR__ . '/../vendor/autoload.php')) {
-    require __DIR__ . '/../vendor/autoload.php';
+if (isset($_GET['diagnostic']) || (isset($_SERVER['REQUEST_URI']) && str_starts_with($_SERVER['REQUEST_URI'], '/diagnostic'))) {
+    header('Content-Type: text/plain');
+    echo "=== PHP DIAGNOSTIC ===\n";
+    echo "PHP Version: " . phpversion() . "\n";
+    echo "PASSWORD_BCRYPT defined: " . (defined('PASSWORD_BCRYPT') ? 'YES' : 'NO') . "\n";
+    try {
+        $testHash = password_hash('password', PASSWORD_BCRYPT, ['cost' => 12]);
+        echo "password_hash cost 12: " . ($testHash ?: 'FAILED') . "\n";
+    } catch (\Throwable $e) {
+        echo "password_hash ERROR: " . $e->getMessage() . "\n";
+    }
+    try {
+        $testDefault = password_hash('password', PASSWORD_DEFAULT);
+        echo "password_hash DEFAULT: " . ($testDefault ?: 'FAILED') . "\n";
+    } catch (\Throwable $e) {
+        echo "password_hash DEFAULT ERROR: " . $e->getMessage() . "\n";
+    }
+    echo "APP_KEY: " . (getenv('APP_KEY') ? 'LOADED' : 'NOT LOADED') . "\n";
+    echo "DB_HOST: " . getenv('DB_HOST') . "\n";
+    exit;
 }
 
 // Bootstrap Laravel
