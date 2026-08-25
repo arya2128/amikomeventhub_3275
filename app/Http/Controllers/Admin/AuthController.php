@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
@@ -13,6 +15,9 @@ class AuthController extends Controller
      */
     public function showLogin()
     {
+        if (Auth::check() && in_array(Auth::user()->role, ['admin', 'organizer', 'superadmin'])) {
+            return redirect()->route('admin.dashboard');
+        }
         return view('auth.login');
     }
 
@@ -23,10 +28,13 @@ class AuthController extends Controller
     {
         $credentials = $request->validate([
             'email'    => ['required', 'email'],
-            'password' => ['required'],
+            'password' => ['required', 'string'],
         ]);
 
-        if (Auth::attempt($credentials)) {
+        $user = User::where('email', $credentials['email'])->first();
+
+        if ($user && Hash::check($credentials['password'], $user->password)) {
+            Auth::login($user, (bool) $request->boolean('remember'));
             $request->session()->regenerate();
             return redirect()->route('admin.dashboard');
         }
