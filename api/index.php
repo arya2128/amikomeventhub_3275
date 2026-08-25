@@ -17,6 +17,9 @@ if (!is_dir($storagePath)) {
 }
 
 putenv("VIEW_COMPILED_PATH={$storagePath}/framework/views");
+putenv("SESSION_DRIVER=cookie");
+putenv("CACHE_STORE=array");
+putenv("LOG_CHANNEL=stderr");
 
 // Autoload Composer
 if (file_exists(__DIR__ . '/../vendor/autoload.php')) {
