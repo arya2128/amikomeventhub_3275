@@ -37,15 +37,6 @@ foreach ($caCandidates as $path) {
     }
 }
 
-if (!$validCa) {
-    $tmpCa = '/tmp/cacert.pem';
-    $data = @file_get_contents('https://curl.se/ca/cacert.pem');
-    if ($data && strlen($data) > 1000) {
-        @file_put_contents($tmpCa, $data);
-        $validCa = $tmpCa;
-    }
-}
-
 // Injeksi environment variables yang valid
 putenv("VIEW_COMPILED_PATH={$storagePath}/framework/views");
 putenv("SESSION_DRIVER=cookie");
@@ -111,21 +102,12 @@ try {
     $app = require_once __DIR__ . '/../bootstrap/app.php';
     $app->useStoragePath($storagePath);
 
-    // Otomatis migrasi & seed jika tabel events belum ada
-    try {
-        if (!Schema::hasTable('events')) {
-            Artisan::call('migrate', ['--force' => true]);
-            Artisan::call('db:seed', ['--force' => true]);
-        }
-    } catch (\Throwable $migEx) {
-        // Biarkan request lanjut jika DB belum siap
-    }
-
     $app->handleRequest(Request::capture());
 } catch (\Throwable $e) {
-    http_response_code(500);
-    echo "<h1>Laravel Error Diagnostik</h1>";
-    echo "<p><strong>Pesan:</strong> " . htmlspecialchars($e->getMessage()) . "</p>";
-    echo "<p><strong>Lokasi:</strong> " . htmlspecialchars($e->getFile()) . " baris " . $e->getLine() . "</p>";
-    echo "<pre>" . htmlspecialchars($e->getTraceAsString()) . "</pre>";
+    header('Content-Type: text/plain');
+    http_response_code(200);
+    echo "=== LARAVEL EXCEPTION CAUGHT ===\n";
+    echo "Pesan: " . $e->getMessage() . "\n";
+    echo "Lokasi: " . $e->getFile() . " baris " . $e->getLine() . "\n";
+    echo "Trace:\n" . $e->getTraceAsString() . "\n";
 }
