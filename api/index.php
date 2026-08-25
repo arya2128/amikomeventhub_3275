@@ -78,7 +78,7 @@ if (isset($_GET['diagnostic']) || (isset($_SERVER['REQUEST_URI']) && str_starts_
         $port = getenv('DB_PORT') ?: '4000';
         $db = getenv('DB_DATABASE') ?: 'test';
         $user = getenv('DB_USERNAME') ?: '2wzR4q2HyxnRSkE.root';
-        $pass = getenv('DB_PASSWORD') ?: 'WWZICHTNFOH6r5Ub';
+        $pass = getenv('DB_PASSWORD') ?: 'zUMvCAU2I2hW5bq6';
 
         $pdoOptions = [
             PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
