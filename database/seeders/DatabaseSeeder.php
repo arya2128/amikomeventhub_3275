@@ -19,13 +19,40 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // 1. Akun Admin Utama (Menggunakan firstOrCreate agar tidak bentrok)
+        // 1. Akun Admin & Organizers
         User::firstOrCreate(
-            ['email' => 'admin@amikom.ac.id'], // Cari berdasarkan email ini
+            ['email' => 'admin@amikom.ac.id'],
             [
                 'name' => 'Admin Amikom',
                 'password' => bcrypt('password'),
                 'role' => 'admin',
+            ]
+        );
+
+        User::firstOrCreate(
+            ['email' => 'organizer.hima@test.com'],
+            [
+                'name' => 'Organizer HIMA',
+                'password' => bcrypt('password'),
+                'role' => 'organizer',
+            ]
+        );
+
+        User::firstOrCreate(
+            ['email' => 'organizer.bem@test.com'],
+            [
+                'name' => 'Organizer BEM',
+                'password' => bcrypt('password'),
+                'role' => 'organizer',
+            ]
+        );
+
+        User::firstOrCreate(
+            ['email' => 'user@test.com'],
+            [
+                'name' => 'User Test',
+                'password' => bcrypt('password'),
+                'role' => 'user',
             ]
         );
             
