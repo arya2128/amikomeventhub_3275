@@ -1,8 +1,6 @@
 <?php
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Support\Facades\Artisan;
 
 define('LARAVEL_START', microtime(true));
 
@@ -26,7 +24,6 @@ $caCandidates = [
     '/etc/ssl/cert.pem',
     __DIR__ . '/cacert.pem',
     __DIR__ . '/../cacert.pem',
-    '/tmp/cacert.pem',
 ];
 
 $validCa = null;
@@ -54,60 +51,13 @@ if ($validCa) {
     putenv("MYSQL_ATTR_SSL_CA={$validCa}");
 }
 
-// Endpoint diagnostik langsung tanpa Laravel boot
-if (isset($_GET['diagnostic']) || (isset($_SERVER['REQUEST_URI']) && str_starts_with($_SERVER['REQUEST_URI'], '/diagnostic'))) {
-    header('Content-Type: text/plain');
-    echo "=== VERCEL PHP DIAGNOSTIC ===\n";
-    echo "PHP Version: " . phpversion() . "\n";
-    echo "APP_KEY: " . (getenv('APP_KEY') ? 'LOADED' : 'NOT LOADED') . "\n";
-    echo "DB_HOST: " . getenv('DB_HOST') . "\n";
-    echo "DB_PORT: " . getenv('DB_PORT') . "\n";
-    echo "DB_DATABASE: " . getenv('DB_DATABASE') . "\n";
-    echo "DB_USERNAME: " . getenv('DB_USERNAME') . "\n";
-    echo "Chosen CA Path: " . ($validCa ?? 'NONE') . "\n\n";
-
-    echo "=== TESTING TIDB CONNECTION ===\n";
-    try {
-        $host = getenv('DB_HOST');
-        $port = getenv('DB_PORT');
-        $db = getenv('DB_DATABASE');
-        $user = getenv('DB_USERNAME');
-        $pass = getenv('DB_PASSWORD');
-
-        $pdoOptions = [
-            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-            PDO::ATTR_TIMEOUT => 8,
-        ];
-        if ($validCa) {
-            $pdoOptions[PDO::MYSQL_ATTR_SSL_CA] = $validCa;
-        }
-
-        $pdo = new PDO("mysql:host={$host};port={$port};dbname={$db};charset=utf8mb4", $user, $pass, $pdoOptions);
-        echo "PDO Connection: SUCCESS!\n";
-        $stmt = $pdo->query("SHOW TABLES");
-        echo "Tables in {$db}: " . implode(', ', $stmt->fetchAll(PDO::FETCH_COLUMN)) . "\n";
-    } catch (\Throwable $e) {
-        echo "PDO Connection FAILED: " . $e->getMessage() . "\n";
-    }
-    exit;
-}
-
 // Autoload Composer
 if (file_exists(__DIR__ . '/../vendor/autoload.php')) {
     require __DIR__ . '/../vendor/autoload.php';
 }
 
-try {
-    // Bootstrap Laravel
-    $app = require_once __DIR__ . '/../bootstrap/app.php';
-    $app->useStoragePath($storagePath);
+// Bootstrap Laravel
+$app = require_once __DIR__ . '/../bootstrap/app.php';
+$app->useStoragePath($storagePath);
 
-    $app->handleRequest(Request::capture());
-} catch (\Throwable $e) {
-    header('Content-Type: text/plain');
-    http_response_code(200);
-    echo "=== LARAVEL EXCEPTION CAUGHT ===\n";
-    echo "Pesan: " . $e->getMessage() . "\n";
-    echo "Lokasi: " . $e->getFile() . " baris " . $e->getLine() . "\n";
-    echo "Trace:\n" . $e->getTraceAsString() . "\n";
-}
+$app->handleRequest(Request::capture());
