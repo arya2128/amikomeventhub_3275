@@ -6,6 +6,8 @@ use Illuminate\Foundation\PackageManifest;
 
 define('LARAVEL_START', microtime(true));
 
+require __DIR__ . '/../vendor/autoload.php';
+
 // Setup folder writable di /tmp untuk Serverless Vercel
 $storagePath = '/tmp/storage';
 if (!is_dir($storagePath)) {
@@ -93,10 +95,7 @@ if (isset($_GET['diagnostic']) || (isset($_SERVER['REQUEST_URI']) && str_starts_
     exit;
 }
 
-// Autoload Composer
-if (file_exists(__DIR__ . '/../vendor/autoload.php')) {
-    require __DIR__ . '/../vendor/autoload.php';
-}
+require __DIR__ . '/../vendor/autoload.php';
 
 // Bootstrap Laravel
 $app = require_once __DIR__ . '/../bootstrap/app.php';
