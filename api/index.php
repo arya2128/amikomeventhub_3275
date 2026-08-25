@@ -45,6 +45,7 @@ putenv("VIEW_COMPILED_PATH={$storagePath}/framework/views");
 putenv("SESSION_DRIVER=database");
 putenv("SESSION_SECURE_COOKIE=true");
 putenv("SESSION_SAME_SITE=lax");
+putenv("SESSION_DOMAIN=");
 putenv("CACHE_STORE=array");
 putenv("LOG_CHANNEL=stderr");
 putenv("APP_URL=https://amikomeventhub-3275.vercel.app");
