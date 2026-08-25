@@ -19,7 +19,9 @@ if (!is_dir($storagePath)) {
 putenv("VIEW_COMPILED_PATH={$storagePath}/framework/views");
 
 // Autoload Composer
-require __DIR__ . '/../vendor/autoload.php';
+if (file_exists(__DIR__ . '/../vendor/autoload.php')) {
+    require __DIR__ . '/../vendor/autoload.php';
+}
 
 // Bootstrap Laravel
 $app = require_once __DIR__ . '/../bootstrap/app.php';
