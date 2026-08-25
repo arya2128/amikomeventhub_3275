@@ -48,6 +48,7 @@ putenv("SESSION_SAME_SITE=lax");
 putenv("CACHE_STORE=array");
 putenv("LOG_CHANNEL=stderr");
 putenv("APP_URL=https://amikomeventhub-3275.vercel.app");
+putenv("GOOGLE_REDIRECT_URI=https://amikomeventhub-3275.vercel.app/auth/google/callback");
 putenv("APP_PACKAGES_CACHE={$storagePath}/bootstrap/cache/packages.php");
 putenv("APP_SERVICES_CACHE={$storagePath}/bootstrap/cache/services.php");
 putenv("APP_CONFIG_CACHE={$storagePath}/bootstrap/cache/config.php");
