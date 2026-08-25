@@ -46,12 +46,19 @@ if (!$validCa) {
     }
 }
 
+// Injeksi environment variables yang valid
 putenv("VIEW_COMPILED_PATH={$storagePath}/framework/views");
 putenv("SESSION_DRIVER=cookie");
 putenv("CACHE_STORE=array");
 putenv("LOG_CHANNEL=stderr");
-putenv("APP_MAINTENANCE_DRIVER=file");
-putenv("APP_MAINTENANCE_STORE=file");
+putenv("DB_CONNECTION=mysql");
+putenv("DB_HOST=gateway01.ap-southeast-1.prod.aws.tidbcloud.com");
+putenv("DB_PORT=4000");
+putenv("DB_DATABASE=test");
+putenv("DB_USERNAME=2wzR4q2HyxnRSkE.root");
+putenv("DB_PASSWORD=zUMvCAU2I2hW5bq6");
+putenv("APP_KEY=base64:NUkjAOZDMmnte8y9PpfFobjXekgkvs/x3gYdhCSohwA=");
+putenv("APP_DEBUG=true");
 if ($validCa) {
     putenv("MYSQL_ATTR_SSL_CA={$validCa}");
 }
@@ -68,17 +75,13 @@ if (isset($_GET['diagnostic']) || (isset($_SERVER['REQUEST_URI']) && str_starts_
     echo "DB_USERNAME: " . getenv('DB_USERNAME') . "\n";
     echo "Chosen CA Path: " . ($validCa ?? 'NONE') . "\n\n";
 
-    echo "=== CA CANDIDATES STATUS ===\n";
-    foreach ($caCandidates as $c) {
-        echo $c . ": " . (file_exists($c) ? "EXISTS (" . filesize($c) . " bytes)" : "NOT FOUND") . "\n";
-    }
-    echo "\n=== TESTING TIDB CONNECTION ===\n";
+    echo "=== TESTING TIDB CONNECTION ===\n";
     try {
-        $host = getenv('DB_HOST') ?: 'gateway01.ap-southeast-1.prod.aws.tidbcloud.com';
-        $port = getenv('DB_PORT') ?: '4000';
-        $db = getenv('DB_DATABASE') ?: 'test';
-        $user = getenv('DB_USERNAME') ?: '2wzR4q2HyxnRSkE.root';
-        $pass = getenv('DB_PASSWORD') ?: 'zUMvCAU2I2hW5bq6';
+        $host = getenv('DB_HOST');
+        $port = getenv('DB_PORT');
+        $db = getenv('DB_DATABASE');
+        $user = getenv('DB_USERNAME');
+        $pass = getenv('DB_PASSWORD');
 
         $pdoOptions = [
             PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
