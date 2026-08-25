@@ -21,6 +21,8 @@ use App\Http\Controllers\TicketController;
 // RUTE PUBLIK (HALAMAN DEPAN)
 // ==========================================
 
+Route::get('/ping', function () { return 'PONG ' . date('Y-m-d H:i:s'); });
+
 // Rute otomatisasi setup database untuk cloud / deploy
 Route::get('/auto-setup', function () {
     try {
